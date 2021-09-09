@@ -13,6 +13,11 @@ defmodule GenScheduler do
     def schedule_jobs(schedulable)
   end
 
+  defimpl Schedulable, for: Atom do
+    def schedule_now?(mod), do: mod.schedule_now?()
+    def schedule_jobs(mod), do: mod.schedule_jobs()
+  end
+
   def start_link(schedulable) do
     GenServer.start_link(__MODULE__, schedulable)
   end
