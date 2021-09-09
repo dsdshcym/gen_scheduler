@@ -7,6 +7,7 @@ defmodule GenScheduler.MixProject do
       version: "0.1.0",
       elixir: "~> 1.12",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps()
     ]
   end
@@ -17,6 +18,9 @@ defmodule GenScheduler.MixProject do
       extra_applications: [:logger]
     ]
   end
+
+  def elixirc_paths(:test), do: ["test/helper", "lib"]
+  def elixirc_paths(_), do: ["lib"]
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
