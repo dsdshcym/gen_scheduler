@@ -7,9 +7,9 @@ defmodule GenSchedulerTest do
 
     schedulable =
       Promox.new()
-      |> Promox.stub(GenScheduler.Schedulable, :schedule_now?, fn _ -> :ok end)
+      |> Promox.stub(GenScheduler, :schedule_now?, fn _ -> :ok end)
       |> Promox.expect(
-        GenScheduler.Schedulable,
+        GenScheduler,
         :schedule_jobs,
         fn _ ->
           send(test_pid, :job_enqueued)

@@ -1,3 +1,3 @@
 require Promox
 
-Promox.defmock(for: GenScheduler.Schedulable)
+Promox.defmock(for: GenScheduler)

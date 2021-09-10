@@ -1,35 +1,33 @@
-defmodule GenScheduler do
+defprotocol GenScheduler do
   @moduledoc """
   Documentation for `GenScheduler`.
   """
 
-  defprotocol Schedulable do
-    @type job :: struct()
+  @type job :: struct()
 
-    @spec schedule_now?(t()) :: :ok | :not_now
-    def schedule_now?(schedulable)
+  @spec schedule_now?(t()) :: :ok | :not_now
+  def schedule_now?(schedulable)
 
-    @spec schedule_jobs(t()) :: {:ok, [job]} | {:error, any()}
-    def schedule_jobs(schedulable)
-  end
+  @spec schedule_jobs(t()) :: {:ok, [job]} | {:error, any()}
+  def schedule_jobs(schedulable)
 
-  def start_link(schedulable) do
+  Kernel.def start_link(schedulable) do
     GenServer.start_link(__MODULE__, schedulable)
   end
 
   use GenServer
 
-  def init(schedulable) do
+  Kernel.def init(schedulable) do
     send(self(), :schedule)
     {:ok, %{schedulable: schedulable, timer: nil}}
   end
 
-  def handle_info(:schedule, %{timer: timer, schedulable: schedulable} = state) do
+  Kernel.def handle_info(:schedule, %{timer: timer, schedulable: schedulable} = state) do
     if timer, do: Process.cancel_timer(timer)
 
     timer =
-      with :ok <- Schedulable.schedule_now?(schedulable),
-           {:ok, _jobs} <- Schedulable.schedule_jobs(schedulable) do
+      with :ok <- GenScheduler.schedule_now?(schedulable),
+           {:ok, _jobs} <- GenScheduler.schedule_jobs(schedulable) do
         Process.send_after(self(), :schedule, 0)
       else
         _ ->
